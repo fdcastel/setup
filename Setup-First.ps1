@@ -52,7 +52,7 @@ Set-ItemProperty -path $HKCUExplorerAdvanced -name 'HideFileExt' -value 0
 Set-ItemProperty -path $HKCUExplorerAdvanced -name 'TaskbarGlomLevel' -value 1
 
 # Determine Windows version
-$WindowsVersion = ([System.Environment]::OSVersion.Version).Major * 10 + ([System.Environment]::OSVersion.Version).Minor
+$WindowsVersion = [System.Environment]::OSVersion.Version.Major * 10 + [System.Environment]::OSVersion.Version.Minor
 
 if ($WindowsVersion -ge 62)
 {
@@ -62,6 +62,15 @@ if ($WindowsVersion -ge 62)
     $langList[0].InputMethodTips.Add('0416:00010416')
     $langList[0].InputMethodTips.Add('0416:00020409')
     Set-WinUserLanguageList $langList -Force
+
+    # Windows 8.1 only: Enable desktop background on start
+    $HKCUExplorerAccent = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent'
+    $key = 'MotionAccentId_v1.00'
+
+    $entry = Get-ItemProperty -Path $HKCUExplorerAccent -Name $key -ErrorAction SilentlyContinue
+    if ($entry -ne $null) {
+        Set-ItemProperty -Path $HKCUExplorerAccent -Name $key -Value ($entry."$key" -bor 1)
+    }
 } else {
     # Windows 7 or lower: Set the only Keyboard Layout to pt-BR/ABNT2
     $HKCUKeyboardPreload = 'HKCU:\Keyboard Layout\Preload'
