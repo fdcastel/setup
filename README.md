@@ -1,4 +1,4 @@
 setup-fdcastel
 ==============
 
-My personal setup scripts
+My personal setup scripts.

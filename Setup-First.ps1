@@ -51,14 +51,26 @@ Set-ItemProperty -path $HKCUExplorerAdvanced -name 'Hidden' -value 1
 Set-ItemProperty -path $HKCUExplorerAdvanced -name 'HideFileExt' -value 0
 Set-ItemProperty -path $HKCUExplorerAdvanced -name 'TaskbarGlomLevel' -value 1
 
-# Set only Keyboard Input to 416 (PT-BR / ABNT2)
-#   ToDo: Fix this for Win8
-$HKCUKeyboardPreload = 'HKCU:\Keyboard Layout\Preload'
-$HKCUKeyboardSubstitutes = 'HKCU:\Keyboard Layout\Substitutes'
-Remove-ItemProperty $HKCUKeyboardPreload -Name (Get-Item $HKCUKeyboardPreload).Property    # Remove all (dumb?) 
-Remove-ItemProperty $HKCUKeyboardSubstitutes -Name (Get-Item $HKCUKeyboardSubstitutes).Property
-Set-ItemProperty -path $HKCUKeyboardPreload -name '1' -value '00000416'
-Set-ItemProperty -path $HKCUKeyboardSubstitutes -name '00000416' -value '00010416'
+# Determine Windows version
+$WindowsVersion = ([System.Environment]::OSVersion.Version).Major * 10 + ([System.Environment]::OSVersion.Version).Minor
+
+if ($WindowsVersion -ge 62)
+{
+    # Windows 8 or higher: Set two Keyboard Layouts: pt-BR/ABNT2, en-US/International
+    $langList = New-WinUserLanguageList pt-BR
+    $langList[0].InputMethodTips.Clear()
+    $langList[0].InputMethodTips.Add('0416:00010416')
+    $langList[0].InputMethodTips.Add('0416:00020409')
+    Set-WinUserLanguageList $langList -Force
+} else {
+    # Windows 7 or lower: Set the only Keyboard Layout to pt-BR/ABNT2
+    $HKCUKeyboardPreload = 'HKCU:\Keyboard Layout\Preload'
+    $HKCUKeyboardSubstitutes = 'HKCU:\Keyboard Layout\Substitutes'
+    Remove-ItemProperty $HKCUKeyboardPreload -Name (Get-Item $HKCUKeyboardPreload).Property    # Remove all (dumb?) 
+    Remove-ItemProperty $HKCUKeyboardSubstitutes -Name (Get-Item $HKCUKeyboardSubstitutes).Property
+    Set-ItemProperty -path $HKCUKeyboardPreload -name '1' -value '00000416'
+    Set-ItemProperty -path $HKCUKeyboardSubstitutes -name '00000416' -value '00010416'
+}
 
 # Install Chocolatey
 iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) | Out-Null
@@ -69,13 +81,9 @@ if([IntPtr]::Size -eq 8) {$fx="framework64"} else {$fx="framework"}
 if(!(test-path "$env:windir\Microsoft.Net\$fx\v4.0.30319")) {
     $env:chocolateyPackageFolder="$env:temp\chocolatey\webcmd"
     $ChocolateyInstall = (Get-ItemProperty 'HKCU:\Environment').ChocolateyInstall
+
     Import-Module $ChocolateyInstall\chocolateyinstall\helpers\chocolateyInstaller.psm1
     Install-ChocolateyZipPackage 'webcmd' 'http://www.iis.net/community/files/webpi/webpicmdline_anycpu.zip' $env:temp
     Start-ChocolateyProcessAsAdmin ".'$env:temp\WebpiCmdLine.exe' /products: NetFramework4 /accepteula"
     Remove-Module ChocolateyInstaller
 }
-
-cinst 7zip 
-cinst GoogleChrome 
-cinst sublimetext2 
-cinst utorrent
