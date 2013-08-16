@@ -6,6 +6,34 @@
 #
 ###
 
+[CmdletBinding()]
+Param()
+
+[string[]]$innerArguments = $MyInvocation.BoundParameters.GetEnumerator() | 
+    ForEach-Object {
+        if ($_.Value -is [Switch]) {
+            "-$($_.Key)"
+        } else {
+            "-$($_.Key)", "$($_.Value)"
+        }
+    }
+$innerArguments += $MyInvocation.UnboundArguments
+
+[string[]]$outerArguments = @('-NoProfile', '-File', "`"$($MyInvocation.MyCommand.Path)`"")
+$outerArguments += $innerArguments
+
+function Requires-Elevation {
+    # Restart script with administrative privileges, if needed
+    if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
+        Write-Verbose 'Running without administrative privileges. Starting new (elevated) PowerShell session...'
+        Write-Verbose "  Arguments: $($outerArguments)"
+        Start-Process -FilePath PowerShell.exe -Verb Runas -WorkingDirectory $pwd -ArgumentList $outerArguments
+        Exit
+    }
+    Write-Verbose 'Running with administrative privileges.'
+    Write-Verbose "  Arguments: $($innerArguments)"
+}
+
 function Reload-Path {
     # Updates current session PATH reading the most updated one from Registry
     $env:Path =  (Get-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Session Manager\Environment').Path + ';' + `
@@ -14,6 +42,9 @@ function Reload-Path {
 
 # Stop on any error
 $ErrorActionPreference = 'Stop'
+
+# Elevate (if needed)
+Requires-Elevation
 
 # Set execution policy
 Set-ExecutionPolicy RemoteSigned -Force
