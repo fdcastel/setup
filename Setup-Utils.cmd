@@ -1,6 +1,6 @@
 @ECHO OFF
 
-cinst 7zip 
-cinst GoogleChrome 
-cinst sublimetext2 
-cinst utorrent
+CALL cinst 7zip
+CALL cinst GoogleChrome
+CALL cinst sublimetext3
+CALL cinst utorrent
