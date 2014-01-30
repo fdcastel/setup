@@ -27,7 +27,7 @@ cinst TortoiseGit
 New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Diff  -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 3\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
 New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 3\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
 
-cinst sliksvn 
+cinst svn 
 # Set Global Ignore Pattern:
 New-Item HKCU:\Software\Tigris.org\Subversion\Config\miscellany -Force | Out-Null
 New-ItemProperty HKCU:\Software\Tigris.org\Subversion\Config\miscellany -Force -Name global-ignores -PropertyType String -Value '*.exe *.bpl *.dcp *.dcu *.~* *.map *.rsm *.log *.$$$ *.dsk *.dti *.ddp *.bdsproj.local *.bdsgroup.local *.user *.identcache __history *.pdb *.Cache *.local' | Out-Null
