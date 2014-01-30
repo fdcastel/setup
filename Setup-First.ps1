@@ -54,18 +54,20 @@ Set-ExecutionPolicy RemoteSigned -Force
 (Get-WmiObject -class 'Win32_TSGeneralSetting' -Namespace root\cimv2\terminalservices -Filter "TerminalName='RDP-tcp'").SetUserAuthenticationRequired(0) | out-null
 netsh advfirewall Firewall set rule group="Remote Desktop" new enable=yes | out-null
 
-# Console settings: Layout and buffer options, Consolas font, foreground color to green
+# Console settings: Layout and buffer options, Consolas font, foreground color to green (ignored by PowerShell)
+#   PowerShell: Not works in Windows 7
 ('HKCU:\Console', 'HKCU:\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe', 'HKCU:\Console\%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe') | ForEach-Object {
-    if (Test-Path $_) {
-        Set-ItemProperty -path $_ -name 'CursorSize' -value 0x00000019
-        Set-ItemProperty -path $_ -name 'FaceName' -value 'Consolas'
-        Set-ItemProperty -path $_ -name 'FontSize' -value 0x000e0000
-        Set-ItemProperty -path $_ -name 'HistoryBufferSize' -value 0x000003e7
-        Set-ItemProperty -path $_ -name 'QuickEdit' -value 0x00000001
-        Set-ItemProperty -path $_ -name 'ScreenBufferSize' -value 0x03e70078
-        Set-ItemProperty -path $_ -name 'ScreenColors' -value 0x0000000a
-        Set-ItemProperty -path $_ -name 'WindowSize' -value 0x003c0078
+    if (-not (Test-Path $_)) {
+    	New-Item -Path $_ -Force
     }
+    Set-ItemProperty -Path $_ -Name 'CursorSize' -Value 0x00000019
+    Set-ItemProperty -Path $_ -Name 'FaceName' -Value 'Consolas'
+    Set-ItemProperty -Path $_ -Name 'FontSize' -Value 0x000e0000
+    Set-ItemProperty -Path $_ -Name 'HistoryBufferSize' -Value 0x000003e7
+    Set-ItemProperty -Path $_ -Name 'QuickEdit' -Value 0x00000001
+    Set-ItemProperty -Path $_ -Name 'ScreenBufferSize' -Value 0x03e70078
+    Set-ItemProperty -Path $_ -Name 'ScreenColors' -Value 0x0000000a
+    Set-ItemProperty -Path $_ -Name 'WindowSize' -Value 0x003c0078
 }
 
 # Autorun for cmd (set console foreground color to yellow if is admin)
