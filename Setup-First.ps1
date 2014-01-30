@@ -87,21 +87,16 @@ $WindowsVersion = [System.Environment]::OSVersion.Version.Major * 10 + [System.E
 
 if ($WindowsVersion -ge 62)
 {
-    # Windows 8 or higher: Set two Keyboard Layouts: pt-BR/ABNT2, en-US/International
+    # Windows 8 or higher: Set the only Keyboard Layout to pt-BR/ABNT2
     $langList = New-WinUserLanguageList pt-BR
     $langList[0].InputMethodTips.Clear()
     $langList[0].InputMethodTips.Add('0416:00010416')
-    $langList[0].InputMethodTips.Add('0416:00020409')
     Set-WinUserLanguageList $langList -Force
 
-    # Windows 8.1 only: Enable desktop background on start
-    $HKCUExplorerAccent = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent'
-    $key = 'MotionAccentId_v1.00'
-
-    $entry = Get-ItemProperty -Path $HKCUExplorerAccent -Name $key -ErrorAction SilentlyContinue
-    if ($entry -ne $null) {
-        Set-ItemProperty -Path $HKCUExplorerAccent -Name $key -Value ($entry."$key" -bor 1)
-    }
+	if ($WindowsVersion -ge 63) {
+	    # Windows 8.1 only: Enable desktop background on start
+	    Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent' -Name 'MotionAccentId_v1.00' -Value 219 -Force
+	}
 } else {
     # Windows 7 or lower: Set the only Keyboard Layout to pt-BR/ABNT2
     $HKCUKeyboardPreload = 'HKCU:\Keyboard Layout\Preload'
@@ -115,15 +110,3 @@ if ($WindowsVersion -ge 62)
 # Install Chocolatey
 iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) | Out-Null
 Reload-Path
-
-# Install .Net 4.0 (for Chocolatey)
-if([IntPtr]::Size -eq 8) {$fx="framework64"} else {$fx="framework"}
-if(!(test-path "$env:windir\Microsoft.Net\$fx\v4.0.30319")) {
-    $env:chocolateyPackageFolder="$env:temp\chocolatey\webcmd"
-    $ChocolateyInstall = (Get-ItemProperty 'HKCU:\Environment').ChocolateyInstall
-
-    Import-Module $ChocolateyInstall\chocolateyinstall\helpers\chocolateyInstaller.psm1
-    Install-ChocolateyZipPackage 'webcmd' 'http://www.iis.net/community/files/webpi/webpicmdline_anycpu.zip' $env:temp
-    Start-ChocolateyProcessAsAdmin ".'$env:temp\WebpiCmdLine.exe' /products: NetFramework4 /accepteula"
-    Remove-Module ChocolateyInstaller
-}
