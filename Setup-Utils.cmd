@@ -1,6 +1,7 @@
 @ECHO OFF
 
-CALL cinst 7zip
-CALL cinst GoogleChrome
-CALL cinst sublimetext3
-CALL cinst utorrent
+CALL cinst 7zip GoogleChrome TeamViewer sublimetext3 utorrent
+
+IF /I [%1] EQU [FULL] (
+	CALL cinst PdfXchangeViewer PdfCreator Skype
+)
