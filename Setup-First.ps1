@@ -97,7 +97,10 @@ if ($WindowsVersion -ge 62)
 
 	if ($WindowsVersion -ge 63) {
 	    # Windows 8.1 only: Enable desktop background on start
-	    Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent' -Name 'MotionAccentId_v1.00' -Value 219 -Force
+
+        $HKCUAccent = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent'
+        New-Item $HKCUAccent -Force
+	    Set-ItemProperty -Path $HKCUAccent -Name 'MotionAccentId_v1.00' -Value 219 -Force
 	}
 } else {
     # Windows 7 or lower: Set the only Keyboard Layout to pt-BR/ABNT2
