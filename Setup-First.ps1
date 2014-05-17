@@ -49,16 +49,15 @@ Requires-Elevation
 # Set execution policy
 Set-ExecutionPolicy RemoteSigned -Force
 
-# Allow Remote Desktop connections, Allow low-security connections, Enable firewall rule
+# Allow Remote Desktop connections, Enable firewall rule
 (Get-WmiObject -Class 'Win32_TerminalServiceSetting' -Namespace root\cimv2\terminalservices).SetAllowTsConnections(1) | out-null
-(Get-WmiObject -class 'Win32_TSGeneralSetting' -Namespace root\cimv2\terminalservices -Filter "TerminalName='RDP-tcp'").SetUserAuthenticationRequired(0) | out-null
 netsh advfirewall Firewall set rule group="Remote Desktop" new enable=yes | out-null
 
 # Console settings: Layout and buffer options, Consolas font, foreground color to green (ignored by PowerShell)
 #   PowerShell: Not works in Windows 7
 ('HKCU:\Console', 'HKCU:\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe', 'HKCU:\Console\%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe') | ForEach-Object {
     if (-not (Test-Path $_)) {
-    	New-Item -Path $_ -Force
+    	New-Item -Path $_ -Force | Out-Null
     }
     Set-ItemProperty -Path $_ -Name 'CursorSize' -Value 0x00000019
     Set-ItemProperty -Path $_ -Name 'FaceName' -Value 'Consolas'
@@ -99,7 +98,7 @@ if ($WindowsVersion -ge 62)
 	    # Windows 8.1 only: Enable desktop background on start
 
         $HKCUAccent = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent'
-        New-Item $HKCUAccent -Force
+        New-Item $HKCUAccent -Force | Out-Null
 	    Set-ItemProperty -Path $HKCUAccent -Name 'MotionAccentId_v1.00' -Value 219 -Force
 	}
 } else {
