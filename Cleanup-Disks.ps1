@@ -24,7 +24,7 @@ $outerArguments += $innerArguments
 
 function Requires-Elevation {
     # Restart script with administrative privileges, if needed
-    if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
+    if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(544)) {
         Write-Verbose 'Running without administrative privileges. Starting new (elevated) PowerShell session...'
         Write-Verbose "  Arguments: $($outerArguments)"
         Start-Process -FilePath PowerShell.exe -Verb Runas -WorkingDirectory $pwd -ArgumentList $outerArguments
