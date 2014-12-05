@@ -114,3 +114,14 @@ if ($WindowsVersion -ge 62)
 # Install Chocolatey
 iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) | Out-Null
 Reload-Path
+
+# Install 7Zip, Chrome and TeamViewer (except if in a server or VM)
+$osName = (Get-WmiObject -class Win32_OperatingSystem).Caption 
+$boardManufacturer = (Get-WmiObject Win32_BaseBoard).Manufacturer
+
+$isWindowsServer = $osName -like '*Server*'
+$isVirtualMachine = $boardManufacturer -like '*Microsoft*'
+
+if ( (-not $isWindowsServer) -and (-not $isVirtualMachine) ) {
+    choco install 7zip GoogleChrome TeamViewer
+}

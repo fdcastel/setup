@@ -24,8 +24,8 @@ git config --global user.name F.D.Castel
 
 cinst TortoiseGit 
 # Configure Beyond Compare integration
-New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Diff  -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 3\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
-New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 3\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Diff  -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 4\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 4\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
 
 cinst svn 
 # Set Global Ignore Pattern:
@@ -34,6 +34,6 @@ New-ItemProperty HKCU:\Software\Tigris.org\Subversion\Config\miscellany -Force -
 
 cinst tortoisesvn 
 # Configure Beyond Compare integration
-New-ItemProperty HKCU:\Software\TortoiseSVN -Force -Name DiffProps -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 3\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
-New-ItemProperty HKCU:\Software\TortoiseSVN -Force -Name Diff      -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 3\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
-New-ItemProperty HKCU:\Software\TortoiseSVN -Force -Name Merge     -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 3\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseSVN -Force -Name DiffProps -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 4\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseSVN -Force -Name Diff      -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 4\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseSVN -Force -Name Merge     -PropertyType String -Value '"C:\Program Files (x86)\Beyond Compare 4\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
