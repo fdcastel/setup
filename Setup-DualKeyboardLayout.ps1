@@ -11,6 +11,15 @@ if ($WindowsVersion -ge 62)
     $langList[0].InputMethodTips.Add('0416:00010416')
     $langList[0].InputMethodTips.Add('0416:00020409')
     Set-WinUserLanguageList $langList -Force
+
+    # Disable hotkeys for switching input layout/language
+    $HKCUInputMethodHotKeys104 = 'HKCU:\Control Panel\Input Method\Hot Keys\00000104'
+    Remove-Item -Path $HKCUInputMethodHotKeys104 -Recurse -ErrorAction 'SilentlyContinue'
+
+    $HKCUKeyboardLayoutToggle = 'HKCU:\Keyboard Layout\Toggle\'
+    Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Language Hotkey' -Value 3
+    Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Layout Hotkey' -Value 3
+    Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Hotkey' -Value 3
 } else {
     # Windows 7 or lower
     $HKCUKeyboardPreload = 'HKCU:\Keyboard Layout\Preload'

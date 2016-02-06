@@ -50,8 +50,8 @@ Requires-Elevation
 Set-ExecutionPolicy RemoteSigned -Force
 
 # Allow Remote Desktop connections, Enable firewall rule
-(Get-WmiObject -Class 'Win32_TerminalServiceSetting' -Namespace root\cimv2\terminalservices).SetAllowTsConnections(1) | out-null
-netsh advfirewall Firewall set rule group="Remote Desktop" new enable=yes | out-null
+(Get-WmiObject -Class 'Win32_TerminalServiceSetting' -Namespace root\cimv2\terminalservices).SetAllowTsConnections(1) | Out-Null
+netsh advfirewall Firewall set rule group="Remote Desktop" new enable=yes | Out-Null
 
 # Console settings: Layout and buffer options, Consolas font, foreground color to green (ignored by PowerShell)
 #   PowerShell: Not works in Windows 7
@@ -71,7 +71,7 @@ netsh advfirewall Firewall set rule group="Remote Desktop" new enable=yes | out-
 
 # Autorun for cmd (set console foreground color to yellow if is admin)
 $HKCUCommandProcessor = 'HKCU:\Software\Microsoft\Command Processor'
-Set-ItemProperty -path $HKCUCommandProcessor -name 'AutoRun' -value 'OPENFILES > NUL 2>&1 & IF NOT ERRORLEVEL 1 COLOR E'
+Set-ItemProperty -path $HKCUCommandProcessor -Name 'AutoRun' -Value 'OPENFILES > NUL 2>&1 & IF NOT ERRORLEVEL 1 COLOR E'
 
 # Autorun for PowerShell (set console foreground color to yellow if is admin)
 New-Item $profile -ItemType File -Force | Out-Null
@@ -79,9 +79,9 @@ Add-Content $profile "if ( ([Security.Principal.WindowsPrincipal] [Security.Prin
 
 # Explorer settings: Show hidden files/folders, Don't hide extensions, Taskbar: combine when is full
 $HKCUExplorerAdvanced = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
-Set-ItemProperty -path $HKCUExplorerAdvanced -name 'Hidden' -value 1
-Set-ItemProperty -path $HKCUExplorerAdvanced -name 'HideFileExt' -value 0
-Set-ItemProperty -path $HKCUExplorerAdvanced -name 'TaskbarGlomLevel' -value 1
+Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'Hidden' -Value 1
+Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'HideFileExt' -Value 0
+Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarGlomLevel' -Value 1
 
 # Determine Windows version
 $WindowsVersion = [System.Environment]::OSVersion.Version.Major * 10 + [System.Environment]::OSVersion.Version.Minor
@@ -94,13 +94,21 @@ if ($WindowsVersion -ge 62)
     $langList[0].InputMethodTips.Add('0416:00010416')
     Set-WinUserLanguageList $langList -Force
 
-	if ($WindowsVersion -ge 63) {
-	    # Windows 8.1 only: Enable desktop background on start
+    # Disable hotkeys for switching input layout/language
+    $HKCUInputMethodHotKeys104 = 'HKCU:\Control Panel\Input Method\Hot Keys\00000104'
+    Remove-Item -Path $HKCUInputMethodHotKeys104 -Recurse -ErrorAction 'SilentlyContinue'
 
+    $HKCUKeyboardLayoutToggle = 'HKCU:\Keyboard Layout\Toggle\'
+    Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Language Hotkey' -Value 3
+    Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Layout Hotkey' -Value 3
+    Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Hotkey' -Value 3
+
+    if ($WindowsVersion -ge 63) {
+        # Windows 8.1 only: Enable desktop background on start
         $HKCUAccent = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent'
         New-Item $HKCUAccent -Force | Out-Null
-	    Set-ItemProperty -Path $HKCUAccent -Name 'MotionAccentId_v1.00' -Value 219 -Force
-	}
+        Set-ItemProperty -Path $HKCUAccent -Name 'MotionAccentId_v1.00' -Value 219 -Force
+    }
 } else {
     # Windows 7 or lower: Set the only Keyboard Layout to pt-BR/ABNT2
     $HKCUKeyboardPreload = 'HKCU:\Keyboard Layout\Preload'
@@ -115,7 +123,7 @@ if ($WindowsVersion -ge 62)
 iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) | Out-Null
 Reload-Path
 
-# Install 7Zip, Chrome and TeamViewer (except if in a server or VM)
+# Install 7Zip, Chrome and TeamViewer (if not in a server nor vm)
 $osName = (Get-WmiObject -class Win32_OperatingSystem).Caption 
 $boardManufacturer = (Get-WmiObject Win32_BaseBoard).Manufacturer
 
@@ -123,5 +131,10 @@ $isWindowsServer = $osName -like '*Server*'
 $isVirtualMachine = $boardManufacturer -like '*Microsoft*'
 
 if ( (-not $isWindowsServer) -and (-not $isVirtualMachine) ) {
-    choco install 7zip GoogleChrome TeamViewer
+    choco install 7zip GoogleChrome TeamViewer -y
+    
+    $postInstallScript = '.\Setup-First-Post-Install.ps1'
+    if (Test-Path $postInstallScript) {
+        & $postInstallScript
+    }
 }
