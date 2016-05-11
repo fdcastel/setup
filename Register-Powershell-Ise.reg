@@ -1,0 +1,17 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\DefaultIcon]
+@="\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe\",1"
+
+[HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell]
+@="Edit"
+
+[HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Edit]
+
+[HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Edit\Command]
+@="\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open]
+
+[HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open\Command]
+@="\"C:\\Windows\\System32\\notepad.exe\" \"%1\""
