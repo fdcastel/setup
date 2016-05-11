@@ -119,6 +119,11 @@ if ($WindowsVersion -ge 62)
     Set-ItemProperty -path $HKCUKeyboardSubstitutes -name '00000416' -value '00010416'
 }
 
+# Disable IPv6 Transition Technologies
+netsh int teredo set state disabled
+netsh int 6to4 set state disabled
+netsh int isatap set state disabled
+
 # Install Chocolatey
 iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) | Out-Null
 Reload-Path
