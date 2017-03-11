@@ -40,6 +40,12 @@ function Reload-Path {
                  (Get-ItemProperty 'HKCU:\Environment').Path
 }
 
+function Get-ScriptDirectory
+{
+  $Invocation = (Get-Variable MyInvocation -Scope 1).Value
+  Split-Path $Invocation.MyCommand.Path
+}
+
 # Stop on any error
 $ErrorActionPreference = 'Stop'
 
@@ -149,6 +155,8 @@ $isVirtualMachine = $boardManufacturer -like '*Microsoft*'
 
 if ( (-not $isWindowsServer) -and (-not $isVirtualMachine) ) {
     choco install 7zip GoogleChrome TeamViewer -y
+
+    Set-Location (Get-ScriptDirectory)
     
     $postInstallScript = '.\Setup-First-Post-Install.ps1'
     if (Test-Path $postInstallScript) {
