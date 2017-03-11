@@ -49,8 +49,15 @@ Requires-Elevation
 # Set execution policy
 Set-ExecutionPolicy RemoteSigned -Force
 
-# Allow Remote Desktop connections, Enable firewall rule
-(Get-WmiObject -Class 'Win32_TerminalServiceSetting' -Namespace root\cimv2\terminalservices).SetAllowTsConnections(1) | Out-Null
+# Allow Remote Desktop connections
+try {
+    (Get-WmiObject -Class 'Win32_TerminalServiceSetting' -Namespace root\cimv2\terminalservices).SetAllowTsConnections(1) | Out-Null
+} 
+catch {
+    # SetAllowTsConnections can fail when running in a RDP session
+    Write-Warning "Cannot enable Remote Desktop connections (running in a remote session?)."
+}
+# Enable Remote Desktop firewall rule
 netsh advfirewall Firewall set rule group="Remote Desktop" new enable=yes | Out-Null
 
 # Console settings: Layout and buffer options, Consolas font, foreground color to green (ignored by PowerShell)
@@ -88,6 +95,11 @@ $WindowsVersion = [System.Environment]::OSVersion.Version.Major * 10 + [System.E
 
 if ($WindowsVersion -ge 62)
 {
+    if ($WindowsVersion -ge 100) {
+        # Windows 10 or higher: Open Explorer to "This PC" (instead of "Quick Access")
+        Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'LaunchTo' -Value 1
+    }
+
     # Windows 8 or higher: Set the only Keyboard Layout to pt-BR/ABNT2
     $langList = New-WinUserLanguageList pt-BR
     $langList[0].InputMethodTips.Clear()
