@@ -34,18 +34,6 @@ function Requires-Elevation {
     Write-Verbose "  Arguments: $($innerArguments)"
 }
 
-function Reload-Path {
-    # Updates current session PATH reading the most updated one from Registry
-    $env:Path =  (Get-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Session Manager\Environment').Path + ';' + `
-                 (Get-ItemProperty 'HKCU:\Environment').Path
-}
-
-function Get-ScriptDirectory
-{
-  $Invocation = (Get-Variable MyInvocation -Scope 1).Value
-  Split-Path $Invocation.MyCommand.Path
-}
-
 # Stop on any error
 $ErrorActionPreference = 'Stop'
 
@@ -66,8 +54,7 @@ catch {
 # Enable Remote Desktop firewall rule
 netsh advfirewall Firewall set rule group="Remote Desktop" new enable=yes | Out-Null
 
-# Console settings: Layout and buffer options, Consolas font, foreground color to green (ignored by PowerShell)
-#   PowerShell: Not works in Windows 7
+# Console settings: Layout and buffer options, Consolas font, foreground color to green (ignored by Powershell)
 ('HKCU:\Console', 'HKCU:\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe', 'HKCU:\Console\%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe') | ForEach-Object {
     if (-not (Test-Path $_)) {
     	New-Item -Path $_ -Force | Out-Null
@@ -96,55 +83,45 @@ Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'Hidden' -Value 1
 Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'HideFileExt' -Value 0
 Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarGlomLevel' -Value 1
 
-# Determine Windows version
 $WindowsVersion = [System.Environment]::OSVersion.Version.Major * 10 + [System.Environment]::OSVersion.Version.Minor
-
-if ($WindowsVersion -ge 62)
-{
-    if ($WindowsVersion -ge 100) {
-        # Windows 10 or higher: Open Explorer to "This PC" (instead of "Quick Access")
-        Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'LaunchTo' -Value 1
-    }
-
-    # Windows 8 or higher: Set the only Keyboard Layout to pt-BR/ABNT2
-    $langList = New-WinUserLanguageList pt-BR
-    $langList[0].InputMethodTips.Clear()
-    $langList[0].InputMethodTips.Add('0416:00010416')
-    Set-WinUserLanguageList $langList -Force
-
-    # Disable hotkeys for switching input layout/language
-    $HKCUInputMethodHotKeys104 = 'HKCU:\Control Panel\Input Method\Hot Keys\00000104'
-    Remove-Item -Path $HKCUInputMethodHotKeys104 -Recurse -ErrorAction 'SilentlyContinue'
-
-    $HKCUKeyboardLayoutToggle = 'HKCU:\Keyboard Layout\Toggle\'
-    Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Language Hotkey' -Value 3
-    Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Layout Hotkey' -Value 3
-    Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Hotkey' -Value 3
-
-    if ($WindowsVersion -ge 63) {
-        # Windows 8.1 only: Enable desktop background on start
-        $HKCUAccent = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent'
-        New-Item $HKCUAccent -Force | Out-Null
-        Set-ItemProperty -Path $HKCUAccent -Name 'MotionAccentId_v1.00' -Value 219 -Force
-    }
-} else {
-    # Windows 7 or lower: Set the only Keyboard Layout to pt-BR/ABNT2
-    $HKCUKeyboardPreload = 'HKCU:\Keyboard Layout\Preload'
-    $HKCUKeyboardSubstitutes = 'HKCU:\Keyboard Layout\Substitutes'
-    Remove-ItemProperty $HKCUKeyboardPreload -Name (Get-Item $HKCUKeyboardPreload).Property    # Remove all (dumb?) 
-    Remove-ItemProperty $HKCUKeyboardSubstitutes -Name (Get-Item $HKCUKeyboardSubstitutes).Property
-    Set-ItemProperty -path $HKCUKeyboardPreload -name '1' -value '00000416'
-    Set-ItemProperty -path $HKCUKeyboardSubstitutes -name '00000416' -value '00010416'
+if ($WindowsVersion -ge 100) {
+    # Windows 10 or higher: Open Explorer to "This PC" (instead of "Quick Access")
+    Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'LaunchTo' -Value 1
 }
+
+# Set the only Keyboard Layout to pt-BR/ABNT2
+$langList = New-WinUserLanguageList pt-BR
+$langList[0].InputMethodTips.Clear()
+$langList[0].InputMethodTips.Add('0416:00010416')
+Set-WinUserLanguageList $langList -Force
+
+# Disable hotkeys for switching input layout/language
+$HKCUInputMethodHotKeys104 = 'HKCU:\Control Panel\Input Method\Hot Keys\00000104'
+Remove-Item -Path $HKCUInputMethodHotKeys104 -Recurse -ErrorAction 'SilentlyContinue'
+$HKCUKeyboardLayoutToggle = 'HKCU:\Keyboard Layout\Toggle\'
+Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Language Hotkey' -Value 3
+Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Layout Hotkey' -Value 3
+Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Hotkey' -Value 3
+
+# Enable desktop background on start (Windows 8.1 only)
+$HKCUAccent = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent'
+New-Item $HKCUAccent -Force | Out-Null
+Set-ItemProperty -Path $HKCUAccent -Name 'MotionAccentId_v1.00' -Value 219 -Force
+
+
 
 # Disable IPv6 Transition Technologies
 netsh int teredo set state disabled
 netsh int 6to4 set state disabled
 netsh int isatap set state disabled
 
+
+
 # Install Chocolatey
-iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) | Out-Null
-Reload-Path
+iex ((iwr 'https://chocolatey.org/install.ps1').Content) | Out-Null
+refreshenv
+
+
 
 # Install 7Zip, Chrome and TeamViewer (if not in a server nor vm)
 $osName = (Get-WmiObject -class Win32_OperatingSystem).Caption 
@@ -156,7 +133,7 @@ $isVirtualMachine = $boardManufacturer -like '*Microsoft*'
 if ( (-not $isWindowsServer) -and (-not $isVirtualMachine) ) {
     choco install 7zip GoogleChrome TeamViewer -y
 
-    Set-Location (Get-ScriptDirectory)
+    Set-Location ($PSScriptRoot)
     
     $postInstallScript = '.\Setup-First-Post-Install.ps1'
     if (Test-Path $postInstallScript) {
