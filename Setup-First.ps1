@@ -118,7 +118,7 @@ netsh int isatap set state disabled
 
 
 # Install Chocolatey
-iex ((iwr 'https://chocolatey.org/install.ps1').Content) | Out-Null
+iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')) | Out-Null
 refreshenv
 
 
