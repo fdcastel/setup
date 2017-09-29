@@ -1,1 +1,0 @@
-@choco install PdfXchangeViewer PdfCreator Skype -y
