@@ -71,6 +71,7 @@ netsh advfirewall Firewall set rule group="Remote Desktop" new enable=yes | Out-
 
 # Autorun for cmd (set console foreground color to yellow if is admin)
 $HKCUCommandProcessor = 'HKCU:\Software\Microsoft\Command Processor'
+mkdir $HKCUCommandProcessor -Force | Out-Null    # Windows 1803 clean install doesn't have this key
 Set-ItemProperty -path $HKCUCommandProcessor -Name 'AutoRun' -Value 'OPENFILES > NUL 2>&1 & IF NOT ERRORLEVEL 1 COLOR E'
 
 # Autorun for PowerShell (set console foreground color to yellow if is admin)
