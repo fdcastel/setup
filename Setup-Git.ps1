@@ -21,7 +21,6 @@ choco install git -y
 Reload-Path
 git config --global user.email fdcastel@gmail.com
 git config --global user.name F.D.Castel
-git config --global credential.helper wincred
 
 choco install tortoisegit -y
 # Configure Beyond Compare integration
