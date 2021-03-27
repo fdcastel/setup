@@ -124,7 +124,7 @@ refreshenv
 
 
 
-# Install 7Zip, Chrome and TeamViewer (if not in a server nor vm)
+# Install 7Zip, Chrome and AnyDesk (if not in a server nor vm)
 $osName = (Get-WmiObject -class Win32_OperatingSystem).Caption 
 $boardManufacturer = (Get-WmiObject Win32_BaseBoard).Manufacturer
 
@@ -132,7 +132,7 @@ $isWindowsServer = $osName -like '*Server*'
 $isVirtualMachine = $boardManufacturer -like '*Microsoft*'
 
 if ( (-not $isWindowsServer) -and (-not $isVirtualMachine) ) {
-    choco install 7zip GoogleChrome TeamViewer -y
+    choco install 7zip GoogleChrome AnyDesk -y
 
     Set-Location ($PSScriptRoot)
     
