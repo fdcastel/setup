@@ -51,8 +51,12 @@ catch {
     # SetAllowTsConnections can fail when running in a RDP session
     Write-Warning "Cannot enable Remote Desktop connections (running in a remote session?)."
 }
+
 # Enable Remote Desktop firewall rule
 netsh advfirewall Firewall set rule group="Remote Desktop" new enable=yes | Out-Null
+
+# Enable ICMP Echo Request (Ping) firewall rule (for IPv4 and IPv6)
+Get-NetFirewallRule -Name 'FPS-ICMP*' | Set-NetFirewallRule -Enabled:True
 
 # Console settings: Layout and buffer options, Consolas font, foreground color to green (ignored by Powershell)
 ('HKCU:\Console', 'HKCU:\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe', 'HKCU:\Console\%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe') | ForEach-Object {
