@@ -80,7 +80,7 @@ Set-ItemProperty -path $HKCUCommandProcessor -Name 'AutoRun' -Value 'OPENFILES >
 
 # Autorun for PowerShell (set console foreground color to yellow if is admin)
 New-Item $profile -ItemType File -Force | Out-Null
-Add-Content $profile "if ( ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator') ) { (Get-Host).UI.RawUI.ForegroundColor = 'Yellow' }"
+Add-Content $profile "if ( ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator') ) { (Get-Host).UI.RawUI.ForegroundColor = 'Yellow' } else { (Get-Host).UI.RawUI.ForegroundColor = 'Green' }"
 
 # Explorer settings: Show hidden files/folders, Don't hide extensions, Taskbar: combine when is full
 $HKCUExplorerAdvanced = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
