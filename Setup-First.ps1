@@ -106,6 +106,9 @@ if ($WindowsVersion -ge 100) {
         Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarMn' -Value 0
         Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarDa' -Value 0
         Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'ShowTaskViewButton' -Value 0
+
+        # Windows 11: Set taskbar alignment to "Left"
+        Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarAl' -Value 0
     }
 }
 
