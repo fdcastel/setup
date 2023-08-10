@@ -109,6 +109,10 @@ if ($WindowsVersion -ge 100) {
 
         # Windows 11: Set taskbar alignment to "Left"
         Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarAl' -Value 0
+        
+        # Windows 11: Hide search box in taskbar
+        $HKCUExplorerAdvanced = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search'
+        Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'SearchboxTaskbarMode' -Value 0        
     }
 }
 
