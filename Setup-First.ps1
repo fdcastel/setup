@@ -90,8 +90,17 @@ Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarGlomLevel' -Value 1
 
 $WindowsVersion = [System.Environment]::OSVersion.Version.Major * 10 + [System.Environment]::OSVersion.Version.Minor
 if ($WindowsVersion -ge 100) {
-    # Windows 10 or higher: Open Explorer to "This PC" (instead of "Quick Access")
+    # Windows 10: Open Explorer to "This PC" (instead of "Quick Access")
     Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'LaunchTo' -Value 1
+
+    if ([System.Environment]::OSVersion.Version.Build -ge 22000) {
+        # Windows 11: Set Windows Terminal as default
+        #   https://support.microsoft.com/en-us/windows/command-prompt-and-windows-powershell-for-windows-11-6453ce98-da91-476f-8651-5c14d5777c20
+        $HKCUStartup = 'HKCU:\Console\%%Startup'
+        New-Item $HKCUStartup -Force | Out-Null
+        Set-ItemProperty -Path $HKCUStartup -Name 'DelegationConsole' -Value '{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}'
+        Set-ItemProperty -Path $HKCUStartup -Name 'DelegationTerminal' -Value '{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}'
+    }
 }
 
 # Set the only Keyboard Layout to pt-BR/ABNT2
