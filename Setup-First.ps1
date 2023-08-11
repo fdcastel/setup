@@ -88,6 +88,10 @@ Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'Hidden' -Value 1
 Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'HideFileExt' -Value 0
 Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarGlomLevel' -Value 1
 
+# Do not hide system tray icons
+$HKCUTrayNotify = 'HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify'
+Set-ItemProperty -path $HKCUTrayNotify -Name 'SystemTrayChevronVisibility' -Value 0
+
 $WindowsVersion = [System.Environment]::OSVersion.Version.Major * 10 + [System.Environment]::OSVersion.Version.Minor
 if ($WindowsVersion -ge 100) {
     # Windows 10: Open Explorer to "This PC" (instead of "Quick Access")
