@@ -24,4 +24,4 @@ reg unload "hku\Default"
 Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
 
 # Remove OneDrive user folder (if empty)
-Remove-Item "$env:userprofile\OneDrive" -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:userprofile\OneDrive" -Recurse -Force -ErrorAction SilentlyContinue
