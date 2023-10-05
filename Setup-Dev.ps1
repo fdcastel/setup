@@ -37,6 +37,14 @@ git config --global user.name F.D.Castel
 # Install TortoiseGit
 choco install tortoisegit -y
 
+# Configure TortoiseGit menus
+#   - Main: Clone, Pull, Push, Commit, Show log, Check for modifications, Switch/Checkout, Create Branch
+#   - Shift pressed: Clone, Create repository here
+New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name 'ContextMenuEntries' -PropertyType 'DWORD' -Value 0x00120c84 | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name 'ContextMenuEntriesHigh' -PropertyType 'DWORD' -Value 0x00000038 | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name 'ContextMenuExtEntriesLow' -PropertyType 'DWORD' -Value 0x40000400 | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name 'ContextMenuExtEntriesHigh' -PropertyType 'DWORD' -Value 0x00012020 | Out-Null
+
 # Configure TortoiseGit / Beyond Compare integration
 New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Diff  -PropertyType String -Value '"C:\Program Files\Beyond Compare 4\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
 New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType String -Value '"C:\Program Files\Beyond Compare 4\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
