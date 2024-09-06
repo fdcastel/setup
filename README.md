@@ -5,6 +5,12 @@ My personal setup scripts.
 ## Setup-First
 
 ```powershell
+# Setup-First (tiny):
+iex (iwr 'https://tinyurl.com/setup-first' -UseBasicParsing).Content
+```
+
+```powershell
+# Setup-First
 iex (iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Setup-First.ps1' -UseBasicParsing).Content
 
 # Extras
@@ -12,7 +18,6 @@ iex (iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Remove-Bloatwa
 iex (iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Remove-OneDrive.ps1' -UseBasicParsing).Content
 iex (iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Remove-Edge.ps1' -UseBasicParsing).Content
 ```
-
 
 
 ## Setup-Dev
