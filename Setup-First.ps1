@@ -108,7 +108,7 @@ if ($WindowsVersion -ge 100) {
         # Windows 11: Remove Chat, Widgets and Task View from taskbar
         $HKCUExplorerAdvanced = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
         Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarMn' -Value 0
-        Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarDa' -Value 0
+        Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'TaskbarDa' -Value 0 -ErrorAction SilentlyContinue
         Set-ItemProperty -Path $HKCUExplorerAdvanced -Name 'ShowTaskViewButton' -Value 0
 
         # Windows 11: Set taskbar alignment to "Left"
