@@ -46,8 +46,8 @@ New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name 'ContextMenuExtEntriesL
 New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name 'ContextMenuExtEntriesHigh' -PropertyType 'DWORD' -Value 0x00012020 | Out-Null
 
 # Configure TortoiseGit / Beyond Compare integration
-New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Diff  -PropertyType String -Value '"C:\Program Files\Beyond Compare 4\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
-New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType String -Value '"C:\Program Files\Beyond Compare 4\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Diff  -PropertyType String -Value '"C:\Program Files\Beyond Compare 5\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
+New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType String -Value '"C:\Program Files\Beyond Compare 5\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
 
 # Install Visual Studio Code
 choco install vscode -y
