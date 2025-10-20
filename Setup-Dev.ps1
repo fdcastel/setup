@@ -15,6 +15,9 @@ function Reload-Path {
 # Stop on any error
 $ErrorActionPreference = 'Stop'
 
+# Install Powershell Core
+choco install powershell-core -y
+
 # Install Beyond Compare
 choco install beyondcompare -y
 
