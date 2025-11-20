@@ -54,3 +54,6 @@ New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType Str
 
 # Install Visual Studio Code
 choco install vscode -y
+
+# Install GitHub CLI
+choco install gh -y
