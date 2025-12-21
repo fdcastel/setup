@@ -149,7 +149,7 @@ refreshenv
 
 
 
-# Install 7Zip, Chrome and AnyDesk (if not in a server nor vm)
+# Install 7Zip and Chrome (if not in a server nor vm)
 $osName = (Get-WmiObject -class Win32_OperatingSystem).Caption 
 $boardManufacturer = (Get-WmiObject Win32_BaseBoard).Manufacturer
 
@@ -157,7 +157,7 @@ $isWindowsServer = $osName -like '*Server*'
 $isVirtualMachine = $boardManufacturer -like '*Microsoft*'
 
 if ( (-not $isWindowsServer) -and (-not $isVirtualMachine) ) {
-    choco install 7zip GoogleChrome AnyDesk -y
+    choco install 7zip GoogleChrome -y
 
     Set-Location ($PSScriptRoot)
     
@@ -165,4 +165,7 @@ if ( (-not $isWindowsServer) -and (-not $isVirtualMachine) ) {
     if (Test-Path $postInstallScript) {
         & $postInstallScript
     }
+
+    # Run Win11Debloat -- https://github.com/Raphire/Win11Debloat
+    & ([scriptblock]::Create((irm "https://debloat.raphi.re/"))) -RunDefaults -Silent
 }
