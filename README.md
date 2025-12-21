@@ -6,19 +6,15 @@ My personal setup scripts.
 
 ```powershell
 # Setup-First (tiny):
-iex (iwr 'https://tinyurl.com/setup-first' -UseBasicParsing).Content
+iwr 'https://tinyurl.com/setup-first' -UseBasicParsing | iex
 ```
 
-```powershell
-# Setup-First
-iex (iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Setup-First.ps1' -UseBasicParsing).Content
-```
 
 
 ## Setup-Dev
 
 ```powershell
-iex (iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Setup-Dev.ps1' -UseBasicParsing).Content
+iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Setup-Dev.ps1' -UseBasicParsing | iex
 ```
 
 
@@ -26,5 +22,5 @@ iex (iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Setup-Dev.ps1'
 ## Setup-Python
 
 ```powershell
-iex (iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Setup-Python.ps1' -UseBasicParsing).Content
+iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Setup-Python.ps1' -UseBasicParsing | iex
 ```
