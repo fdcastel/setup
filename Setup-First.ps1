@@ -143,6 +143,11 @@ netsh int isatap set state disabled
 
 
 
+# Disable the "Welcome to Microsoft Edge" first-run screen 
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v HideFirstRunExperience /t REG_DWORD /d 1 /f
+
+
+
 # Install Chocolatey
 iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')) | Out-Null
 refreshenv
