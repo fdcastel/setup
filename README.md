@@ -6,7 +6,7 @@ My personal setup scripts.
 
 ```powershell
 # Setup-First (tiny):
-iwr 'https://tinyurl.com/setup-first' -UseBasicParsing | iex
+iwr 'https://tinyurl.com/Setup-first' -UseBasicParsing | iex
 ```
 
 
@@ -23,4 +23,12 @@ iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Setup-Dev.ps1' -Use
 
 ```powershell
 iwr 'https://raw.githubusercontent.com/fdcastel/setup/master/Setup-Python.ps1' -UseBasicParsing | iex
+```
+
+
+
+## Upgrade-Powershell
+
+```powershell
+irm 'https://tinyurl.com/Upgrade-PowerShell' | iex
 ```

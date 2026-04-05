@@ -134,25 +134,20 @@ Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Language Hotkey' -Value 
 Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Layout Hotkey' -Value 3
 Set-ItemProperty -Path $HKCUKeyboardLayoutToggle -Name 'Hotkey' -Value 3
 
-
-
 # Disable IPv6 Transition Technologies
 netsh int teredo set state disabled
 netsh int 6to4 set state disabled
 netsh int isatap set state disabled
 
-
-
 # Disable the "Welcome to Microsoft Edge" first-run screen 
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v HideFirstRunExperience /t REG_DWORD /d 1 /f
 
-
+# Upgrade PowerShell
+irm 'https://tinyurl.com/Upgrade-PowerShell' | iex
 
 # Install Chocolatey
 iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')) | Out-Null
 refreshenv
-
-
 
 # Install 7Zip and Chrome (if not in a server nor vm)
 $osName = (Get-WmiObject -class Win32_OperatingSystem).Caption 
