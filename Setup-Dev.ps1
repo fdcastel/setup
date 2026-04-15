@@ -52,8 +52,5 @@ New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name 'ContextMenuExtEntriesH
 New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Diff  -PropertyType String -Value '"C:\Program Files\Beyond Compare 5\BComp.exe" %base %mine /title1=%bname /title2=%yname /leftreadonly' | Out-Null
 New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType String -Value '"C:\Program Files\Beyond Compare 5\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
 
-# Install Visual Studio Code
-choco install vscode -y
-
-# Install GitHub CLI
-choco install gh -y
+# Install Visual Studio Code, GitHub CLI and Claude Code
+choco install vscode gh claude-code -y
