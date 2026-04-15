@@ -94,16 +94,16 @@ function Merge-JsonObject {
     return $Base
 }
 
-$repoSettings = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/fdcastel/setup/master/claude/settings.json' -UseBasicParsing |
+$defaultSettings = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/fdcastel/setup/master/claude/default-settings.json' -UseBasicParsing |
     Select-Object -ExpandProperty Content |
     ConvertFrom-Json
 
 if (Test-Path $claudeSettingsFile) {
     $existingSettings = Get-Content -Path $claudeSettingsFile -Raw | ConvertFrom-Json
-    $mergedSettings = Merge-JsonObject -Base $existingSettings -Overlay $repoSettings
+    $mergedSettings = Merge-JsonObject -Base $existingSettings -Overlay $defaultSettings
 }
 else {
-    $mergedSettings = $repoSettings
+    $mergedSettings = $defaultSettings
 }
 
 $mergedSettingsJson = $mergedSettings | ConvertTo-Json -Depth 100
