@@ -54,3 +54,58 @@ New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType Str
 
 # Install Visual Studio Code, GitHub CLI and Claude Code
 choco install vscode gh claude-code -y
+
+
+
+#
+# Download Claude settings and merge them with the current user's settings
+#
+$claudeConfigDir = Join-Path -Path $env:USERPROFILE -ChildPath '.claude'
+New-Item -Path $claudeConfigDir -ItemType Directory -Force | Out-Null
+
+$claudeSettingsFile = Join-Path -Path $claudeConfigDir -ChildPath 'settings.json'
+$ProgressPreference = 'SilentlyContinue'    # Disable progress bar.
+
+function Merge-JsonObject {
+    param(
+        [Parameter(Mandatory = $true)]
+        [pscustomobject]$Base,
+
+        [Parameter(Mandatory = $true)]
+        [pscustomobject]$Overlay
+    )
+
+    foreach ($overlayProperty in $Overlay.PSObject.Properties) {
+        $propertyName = $overlayProperty.Name
+        $overlayValue = $overlayProperty.Value
+        $baseProperty = $Base.PSObject.Properties[$propertyName]
+
+        if ($null -eq $baseProperty) {
+            $Base | Add-Member -MemberType NoteProperty -Name $propertyName -Value $overlayValue
+            continue
+        }
+
+        $baseValue = $baseProperty.Value
+        if ( ($baseValue -is [pscustomobject]) -and ($overlayValue -is [pscustomobject]) ) {
+            Merge-JsonObject -Base $baseValue -Overlay $overlayValue | Out-Null
+        }
+    }
+
+    return $Base
+}
+
+$repoSettings = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/fdcastel/setup/master/claude/settings.json' -UseBasicParsing |
+    Select-Object -ExpandProperty Content |
+    ConvertFrom-Json
+
+if (Test-Path $claudeSettingsFile) {
+    $existingSettings = Get-Content -Path $claudeSettingsFile -Raw | ConvertFrom-Json
+    $mergedSettings = Merge-JsonObject -Base $existingSettings -Overlay $repoSettings
+}
+else {
+    $mergedSettings = $repoSettings
+}
+
+$mergedSettingsJson = $mergedSettings | ConvertTo-Json -Depth 100
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)    # Write JSON without BOM
+[System.IO.File]::WriteAllLines($claudeSettingsFile, @($mergedSettingsJson), $utf8NoBom)
