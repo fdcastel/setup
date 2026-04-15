@@ -6,7 +6,7 @@
 #
 ###
 
-function Reload-Path {
+function Update-SessionPath {
     # Updates current session PATH reading the most updated one from Registry
     $env:Path =  (Get-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Session Manager\Environment').Path + ';' + `
                  (Get-ItemProperty 'HKCU:\Environment').Path
@@ -16,14 +16,14 @@ function Reload-Path {
 $ErrorActionPreference = 'Stop'
 
 # Install Powershell Core
-choco install powershell-core -y
+choco upgrade powershell-core -y
 
 # Install Beyond Compare
-choco install beyondcompare -y
+choco upgrade beyondcompare -y
 
 # Install Git
-choco install git -y
-Reload-Path
+choco upgrade git -y
+Update-SessionPath
 
 # Remove Git Windows Explorer context menu entries
 Remove-Item -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_gui" -Force -Recurse
@@ -38,7 +38,7 @@ git config --global user.email fdcastel@gmail.com
 git config --global user.name F.D.Castel
 
 # Install TortoiseGit
-choco install tortoisegit -y
+choco upgrade tortoisegit -y
 
 # Configure TortoiseGit menus
 #   - Main: Clone, Pull, Push, Commit, Show log, Check for modifications, Switch/Checkout, Create Branch
@@ -53,7 +53,7 @@ New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Diff  -PropertyType Str
 New-ItemProperty HKCU:\Software\TortoiseGit -Force -Name Merge -PropertyType String -Value '"C:\Program Files\Beyond Compare 5\BComp.exe" %mine %theirs %base %merged /title1=%yname /title2=%tname /title3=%bname /title4=%mname' | Out-Null
 
 # Install Visual Studio Code, GitHub CLI and Claude Code
-choco install vscode gh claude-code -y
+choco upgrade vscode gh claude-code -y
 
 
 
