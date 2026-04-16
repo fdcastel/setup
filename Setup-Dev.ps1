@@ -92,9 +92,6 @@ function Merge-RemoteJsonIntoFile {
 $ErrorActionPreference = 'Stop'             # Stop on any error
 $ProgressPreference = 'SilentlyContinue'    # Disable progress bar.
 
-# Install Powershell Core
-choco upgrade powershell-core -y
-
 # Install Beyond Compare
 choco upgrade beyondcompare -y
 
