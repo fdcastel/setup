@@ -26,12 +26,12 @@ choco upgrade git -y
 Update-SessionPath
 
 # Remove Git Windows Explorer context menu entries
-Remove-Item -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_gui" -Force -Recurse
-Remove-Item -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_shell" -Force -Recurse
-Remove-Item -Path "Registry::HKEY_CLASSES_ROOT\Directory\shell\git_gui" -Force -Recurse
-Remove-Item -Path "Registry::HKEY_CLASSES_ROOT\Directory\shell\git_shell" -Force -Recurse
-Remove-Item -Path "Registry::HKEY_CLASSES_ROOT\LibraryFolder\background\shell\git_gui" -Force -Recurse
-Remove-Item -Path "Registry::HKEY_CLASSES_ROOT\LibraryFolder\background\shell\git_shell" -Force -Recurse
+Remove-Item -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_gui" -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_shell" -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path "Registry::HKEY_CLASSES_ROOT\Directory\shell\git_gui" -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path "Registry::HKEY_CLASSES_ROOT\Directory\shell\git_shell" -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path "Registry::HKEY_CLASSES_ROOT\LibraryFolder\background\shell\git_gui" -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path "Registry::HKEY_CLASSES_ROOT\LibraryFolder\background\shell\git_shell" -Force -Recurse -ErrorAction SilentlyContinue
 
 # Configure Git
 git config --global user.email fdcastel@gmail.com
