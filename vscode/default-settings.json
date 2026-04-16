@@ -1,0 +1,23 @@
+{
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+
+    "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationAfterEveryPipeline",
+    "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+    "powershell.codeFormatting.preset": "OTBS",
+
+    "git.confirmSync": false,
+
+    "chat.agent.maxRequests": 500,
+    "chat.tools.global.autoApprove": true,
+    "chat.tools.terminal.autoApprove": {
+        "/.*/": true
+    },
+
+    "github.copilot.chat.summarizeAgentConversationHistory.enabled": false,
+    "github.copilot.nextEditSuggestions.enabled": true,
+
+    "claudeCode.allowDangerouslySkipPermissions": true,
+    "claudeCode.initialPermissionMode": "bypassPermissions",
+    "claudeCode.useCtrlEnterToSend": true
+}
